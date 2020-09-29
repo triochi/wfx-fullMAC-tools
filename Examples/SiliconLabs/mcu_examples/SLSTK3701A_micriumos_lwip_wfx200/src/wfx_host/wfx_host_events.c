@@ -76,7 +76,7 @@ static void wfx_events_task(void *p_arg)
 #ifdef SLEEP_ENABLED
       if (!(wifi.state & SL_WFX_AP_INTERFACE_UP)) {
         // Enable the power save
-        sl_wfx_set_power_mode(WFM_PM_MODE_PS, 1);
+        sl_wfx_set_power_mode(WFM_PM_MODE_PS, WFM_PM_SKIP_CNT);
         sl_wfx_enable_device_power_save();
       }
 #endif
@@ -99,7 +99,7 @@ static void wfx_events_task(void *p_arg)
 #ifdef SLEEP_ENABLED
       if (wifi.state & SL_WFX_STA_INTERFACE_CONNECTED) {
         // Enable the power save
-        sl_wfx_set_power_mode(WFM_PM_MODE_PS, 1);
+        sl_wfx_set_power_mode(WFM_PM_MODE_PS, WFM_PM_SKIP_CNT);
         sl_wfx_enable_device_power_save();
       }
 #endif

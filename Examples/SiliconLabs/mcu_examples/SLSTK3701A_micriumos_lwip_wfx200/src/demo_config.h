@@ -25,6 +25,8 @@
 #include "sl_status.h"
 
 #define USE_DHCP_CLIENT_DEFAULT    1   ///< If defined, DHCP is enabled, otherwise static address below is used
+#define SLEEP_ENABLED			   1
+#define WFM_PM_SKIP_CNT			   10
 
 /************************** Station Static Default ****************************/
 #define STA_IP_ADDR0_DEFAULT   (uint8_t) 192 ///< Static IP: IP address value 0
