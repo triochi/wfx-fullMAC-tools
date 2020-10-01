@@ -70,6 +70,8 @@ sl_status_t sl_wfx_pta_priority(uint32_t priority);
 
 sl_status_t sl_wfx_pta_state(uint32_t pta_state);
 
+sl_status_t sl_wfx_set_cca_config(uint8_t cca_thr_mode);
+
 sl_status_t sl_wfx_prevent_rollback(uint32_t magic_word);
 
 sl_status_t sl_wfx_get_opn(uint8_t **opn);
@@ -109,15 +111,6 @@ sl_status_t sl_wfx_set_wake_up_bit(uint8_t state);
 sl_status_t sl_wfx_enable_device_power_save(void);
 
 sl_status_t sl_wfx_disable_device_power_save(void);
-
-sl_status_t sl_wfx_join_ibss_command(const uint8_t *ssid,
-                                     uint32_t ssid_length,
-                                     uint32_t channel,
-                                     uint16_t security_mode,
-                                     const uint8_t *passkey,
-                                     uint16_t passkey_length);
-
-sl_status_t sl_wfx_leave_ibss_command(void);
 
 sl_status_t sl_wfx_get_signal_strength(uint32_t *rcpi);
 
@@ -159,7 +152,7 @@ sl_status_t sl_wfx_get_max_tx_power(int32_t *max_tx_power_rf_port_1,
                                     int32_t *max_tx_power_rf_port_2,
                                     sl_wfx_interface_t interface);
 
-sl_status_t sl_wfx_get_pmk(uint8_t *password,
+sl_status_t sl_wfx_get_pmk(sl_wfx_password_t *password,
                            uint32_t *password_length,
                            sl_wfx_interface_t interface);
 
