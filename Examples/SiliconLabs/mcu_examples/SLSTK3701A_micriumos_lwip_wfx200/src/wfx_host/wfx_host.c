@@ -509,7 +509,7 @@ sl_status_t sl_wfx_host_post_event(sl_wfx_generic_message_t *network_rx_buffer)
       printf("Firmware Exception\r\n");
       sl_wfx_exception_ind_body_t *firmware_exception = (sl_wfx_exception_ind_body_t*)network_rx_buffer;
       printf("Exception data = \n");
-      for (i = 0; i < SL_WFX_EXCEPTION_DATA_SIZE_MAX; i++) {
+      for (i = 0; i < SL_WFX_EXCEPTION_DATA_SIZE; i++) {
         printf("%X, ", firmware_exception->data[i]);
       }
       printf("\n");

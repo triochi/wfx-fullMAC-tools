@@ -19,11 +19,9 @@
 
 #include <stdint.h>
 
-#include "sl_wfx_general_error_api.h"
-
 //< API Internal Version encoding
 #define SL_WFX_API_VERSION_MINOR                 0x03
-#define SL_WFX_API_VERSION_MAJOR                 0x03
+#define SL_WFX_API_VERSION_MAJOR                 0x02
 
 #define SL_WFX_SSID_SIZE                         32
 #define SL_WFX_MAC_ADDR_SIZE                     6
@@ -165,14 +163,13 @@ typedef struct __attribute__((__packed__)) sl_wfx_generic_confirmation_s {
 typedef enum sl_wfx_generic_requests_ids_e {
   SL_WFX_CONFIGURATION_REQ_ID                    = 0x09,   ///< \b CONFIGURATION request Id use body sl_wfx_configuration_req_body_t and returns sl_wfx_configuration_cnf_body_t
   SL_WFX_CONTROL_GPIO_REQ_ID                     = 0x26,   ///< \b CONTROL_GPIO request Id use body sl_wfx_control_gpio_req_body_t and returns sl_wfx_control_gpio_cnf_body_t
-  SL_WFX_SET_SECURELINK_MAC_KEY_REQ_ID           = 0x27,   ///< \b SET_SECURELINK_MAC_KEY request Id use body sl_wfx_set_securelink_mac_key_req_body_t and returns sl_wfx_set_securelink_mac_key_cnf_body_t
-  SL_WFX_SECURELINK_EXCHANGE_PUB_KEYS_REQ_ID     = 0x28,   ///< \b SECURELINK_EXCHANGE_PUB_KEYS request Id use body sl_wfx_securelink_exchange_pub_keys_req_body_t and returns sl_wfx_securelink_exchange_pub_keys_cnf_body_t
-  SL_WFX_SECURELINK_CONFIGURE_REQ_ID             = 0x29,   ///< \b SECURELINK_CONFIGURE request Id use body sl_wfx_securelink_configure_req_body_t and returns sl_wfx_securelink_exchange_pub_keys_cnf_body_t
+  SL_WFX_SET_SL_MAC_KEY_REQ_ID                   = 0x27,   ///< \b SET_SL_MAC_KEY request Id use body sl_wfx_set_sl_mac_key_req_body_t and returns sl_wfx_set_sl_mac_key_cnf_body_t
+  SL_WFX_SECURELINK_EXCHANGE_PUB_KEYS_REQ_ID     = 0x28,   ///< \b SL_EXCHANGE_PUB_KEYS request Id use body sl_wfx_securelink_exchange_pub_keys_req_body_t and returns sl_wfx_securelink_exchange_pub_keys_cnf_body_t
+  SL_WFX_SECURELINK_CONFIGURE_REQ_ID             = 0x29,   ///< \b SL_CONFIGURE request Id use body sl_wfx_securelink_configure_req_body_t and returns sl_wfx_securelink_exchange_pub_keys_cnf_body_t
   SL_WFX_PREVENT_ROLLBACK_REQ_ID                 = 0x2a,   ///< \b PREVENT_ROLLBACK request Id use body sl_wfx_prevent_rollback_req_body_t and returns sl_wfx_prevent_rollback_cnf_body_t
   SL_WFX_PTA_SETTINGS_REQ_ID                     = 0x2b,   ///< \b PTA_SETTINGS request Id use body sl_wfx_pta_settings_req_body_t and returns sl_wfx_pta_settings_cnf_body_t
   SL_WFX_PTA_PRIORITY_REQ_ID                     = 0x2c,   ///< \b PTA_PRIORITY request Id use body sl_wfx_pta_priority_req_body_t and returns sl_wfx_pta_priority_cnf_body_t
   SL_WFX_PTA_STATE_REQ_ID                        = 0x2d,   ///< \b PTA_STATE request Id use body sl_wfx_pta_state_req_body_t and returns sl_wfx_pta_state_cnf_body_t
-  SL_WFX_SET_CCA_CONFIG_REQ_ID                   = 0x2e,   ///< \b SET_CCA_CONFIG request Id uses body sl_wfx_set_cca_config_req_body_t and returns sl_wfx_set_cca_config_cnf_body_t
   SL_WFX_SHUT_DOWN_REQ_ID                        = 0x32,   ///< \b SHUT_DOWN request Id use body sl_wfx_shut_down_req_t and never returns
 } sl_wfx_generic_requests_ids_t;
 
@@ -185,14 +182,13 @@ typedef enum sl_wfx_generic_requests_ids_e {
 typedef enum sl_wfx_general_confirmations_ids_e {
   SL_WFX_CONFIGURATION_CNF_ID                    = 0x09,   ///< \b CONFIGURATION confirmation Id returns body sl_wfx_configuration_cnf_body_t
   SL_WFX_CONTROL_GPIO_CNF_ID                     = 0x26,   ///< \b CONTROL_GPIO confirmation Id returns body sl_wfx_control_gpio_cnf_body_t
-  SL_WFX_SET_SECURELINK_MAC_KEY_CNF_ID           = 0x27,   ///< \b SET_SECURELINK_MAC_KEY confirmation Id returns body sl_wfx_set_securelink_mac_key_cnf_body_t
-  SL_WFX_SECURELINK_EXCHANGE_PUB_KEYS_CNF_ID     = 0x28,   ///< \b SECURELINK_EXCHANGE_PUB_KEYS confirmation Id returns body sl_wfx_securelink_exchange_pub_keys_cnf_body_t
-  SL_WFX_SECURELINK_CONFIGURE_CNF_ID             = 0x29,   ///< \b SECURELINK_CONFIGURE confirmation Id returns body sl_wfx_securelink_configure_cnf_body_t
+  SL_WFX_SET_SL_MAC_KEY_CNF_ID                   = 0x27,   ///< \b SET_SL_MAC_KEY confirmation Id returns body sl_wfx_set_sl_mac_key_cnf_body_t
+  SL_WFX_SECURELINK_EXCHANGE_PUB_KEYS_CNF_ID     = 0x28,   ///< \b SL_EXCHANGE_PUB_KEYS confirmation Id returns body sl_wfx_securelink_exchange_pub_keys_cnf_body_t
+  SL_WFX_SECURELINK_CONFIGURE_CNF_ID             = 0x29,   ///< \b SL_CONFIGURE confirmation Id returns body sl_wfx_securelink_configure_cnf_body_t
   SL_WFX_PREVENT_ROLLBACK_CNF_ID                 = 0x2a,   ///< \b PREVENT_ROLLBACK confirmation Id use body sl_wfx_prevent_rollback_cnf_body_t
   SL_WFX_PTA_SETTINGS_CNF_ID                     = 0x2b,   ///< \b PTA_SETTINGS confirmation Id returns sl_wfx_pta_settings_cnf_body_t
   SL_WFX_PTA_PRIORITY_CNF_ID                     = 0x2c,   ///< \b PTA_PRIORITY confirmation Id returns sl_wfx_pta_priority_cnf_body_t
   SL_WFX_PTA_STATE_CNF_ID                        = 0x2d,   ///< \b PTA_STATE confirmation Id returns sl_wfx_pta_state_cnf_body_t
-  SL_WFX_SET_CCA_CONFIG_CNF_ID                   = 0x2e,   ///< \b SET_CCA_CONFIG confirmation Id returns body sl_wfx_set_cca_config_cnf_body_t
 } sl_wfx_general_confirmations_ids_t;
 
 /**
@@ -225,7 +221,7 @@ typedef union __attribute__((__packed__)) sl_wfx_general_commands_ids_u {
 
 /**
  * @brief General confirmation possible values for returned 'status' field
- * WLAN
+ *WLAN
  * All general confirmation messages have a field 'status' just after the message header.@n
  * A value of zero indicates the request is completed successfully.
  *
@@ -431,8 +427,7 @@ typedef sl_wfx_header_t sl_wfx_shut_down_req_t;
 typedef enum sl_wfx_generic_indication_type_e {
   SL_WFX_GENERIC_INDICATION_TYPE_RAW             = 0x0,    ///<Byte stream type, currently not used
   SL_WFX_GENERIC_INDICATION_TYPE_STRING          = 0x1,    ///<NULL terminating String
-  SL_WFX_GENERIC_INDICATION_TYPE_RX_STATS        = 0x2,    ///<Rx statistics structure
-  SL_WFX_GENERIC_INDICATION_TYPE_TX_PWR_LOOP_INFO = 0x3     ///<Tx power loop info structure
+  SL_WFX_GENERIC_INDICATION_TYPE_RX_STATS        = 0x2     ///<Rx statistics structure
 } sl_wfx_generic_indication_type_t;
 
 /**
@@ -451,25 +446,10 @@ typedef struct __attribute__((__packed__)) sl_wfx_rx_stats_s {
   uint32_t date;                                           ///<This message transmission date in firmware timebase (microsecond)
   uint32_t pwr_clk_freq;                                   ///<Frequency of the low power clock in Hz
   uint8_t  is_ext_pwr_clk;                                 ///<Indicate if the low power clock is external
-  int8_t   current_temp;                                   ///<Current die temperature in Celsius
 } sl_wfx_rx_stats_t;
-
-/**
- * @brief TX power loop info from the GENERIC indication message sl_wfx_generic_ind_body_t
- */
-typedef struct __attribute__((__packed__)) sl_wfx_tx_pwr_loop_info_s {
-  uint16_t   dig_gain;                                     ///<Used Tx digital gain
-  uint16_t   ppa_gain;                                     ///<Used Tx PA gain
-  int16_t    target_pout;                                  ///<Power target in qdBm
-  int16_t    pestimation;                                  ///<FEM output power in qdBm
-  uint16_t   vpdet;                                        ///<Measured Vpdet in mV
-  uint8_t    meas_index;                                   ///<Vpdet measurement index
-  uint8_t    reserved;                                     ///<Reserved
-} sl_wfx_tx_pwr_loop_info_t;
 
 typedef union __attribute__((__packed__)) sl_wfx_indication_data_u {
   sl_wfx_rx_stats_t rx_stats;
-  sl_wfx_tx_pwr_loop_info_t tx_pwr_loop_info;
   uint8_t  raw_data[376];
 } sl_wfx_indication_data_t;
 
@@ -488,21 +468,38 @@ typedef struct __attribute__((__packed__)) sl_wfx_generic_ind_s {
   sl_wfx_generic_ind_body_t body;
 } sl_wfx_generic_ind_t;
 
-#define SL_WFX_EXCEPTION_DATA_SIZE_MAX          1600
+#define SL_WFX_EXCEPTION_DATA_SIZE               124
 /**
  * @brief Exception indication message
  *
  * It reports unexpected errors. A reboot is needed after this message.
  * */
 typedef struct __attribute__((__packed__)) sl_wfx_exception_ind_body_s {
-  uint32_t reason;                                         ///<Reason of the exception
-  uint8_t  data[];                                         ///<Raw data array
+  uint8_t  data[SL_WFX_EXCEPTION_DATA_SIZE];               ///<Raw data array
 } sl_wfx_exception_ind_body_t;
 
 typedef struct __attribute__((__packed__)) sl_wfx_exception_ind_s {
   sl_wfx_header_t header;
   sl_wfx_exception_ind_body_t body;
 } sl_wfx_exception_ind_t;
+
+/**
+ * @brief specifies the type of error reported by the indication message sl_wfx_error_ind_body_t
+ *
+ * */
+typedef enum sl_wfx_error_e {
+  WSM_SL_WFX_ERROR_FIRMWARE_ROLLBACK             = 0x0,    ///<Firmware rollback error, no data returned
+  WSM_SL_WFX_ERROR_FIRMWARE_DEBUG_ENABLED        = 0x1,    ///<Firmware debug feature enabled, no data returned
+  WSM_SL_WFX_ERROR_OUTDATED_SESSION_KEY          = 0x2,    ///<SecureLink Session key is outdated, 4 bytes returned (nonce counter)
+  WSM_SL_WFX_ERROR_INVALID_SESSION_KEY           = 0x3,    ///<SecureLink Session key is invalid, 0 or 4 bytes returned
+  WSM_SL_WFX_ERROR_OOR_VOLTAGE                   = 0x4,    ///<Out-of-range power supply voltage detected, no data returned
+  WSM_SL_WFX_ERROR_PDS_VERSION                   = 0x5,    ///<Wrong PDS version detected, no data returned
+  WSM_SL_ERROR_OOR_TEMPERATURE                   = 0x6,    ///<Out-of-range temperature, no data returned
+  WSM_SL_ERROR_REQ_DURING_KEY_EXCHANGE           = 0x7,    ///<Requets from Host are forbidden until the end of key exchange (Host should wait for the associated indication)
+  WSM_SL_ERROR_MULTI_TX_CNF_SECURELINK           = 0x8,    ///<'Multi TX conf' feature is not supported in SecureLink mode
+  WSM_SL_ERROR_SECURELINK_OVERFLOW               = 0x9,    ///<HT SecureLink traffic is producing an internal overflow
+  WSM_SL_ERROR_SECURELINK_DECRYPTION             = 0xa     ///<An error occured during message decryption (can be a counter mismatch or wrong CCM tag)
+} sl_wfx_error_t;
 
 /**
  * @brief Error indication message.
@@ -512,7 +509,7 @@ typedef struct __attribute__((__packed__)) sl_wfx_exception_ind_s {
  * */
 typedef struct __attribute__((__packed__)) sl_wfx_error_ind_body_s {
   uint32_t type;                                           ///<error type, see enum sl_wfx_error_t
-  uint8_t  data[];                                         ///<Generic data buffer - contents depends on the error type.
+  uint8_t  data[];                                        ///<Generic data buffer - contents depends on the error type.
 } sl_wfx_error_ind_body_t;
 
 typedef struct __attribute__((__packed__)) sl_wfx_error_ind_s {
@@ -549,7 +546,7 @@ typedef enum sl_wfx_secure_link_state_e {
 } sl_wfx_secure_link_state_t;
 
 /**
- * @brief destination of the *Secure Link MAC key*, used by request message sl_wfx_set_securelink_mac_key_req_body_t
+ * @brief destination of the *Secure Link MAC key*, used by request message sl_wfx_set_sl_mac_key_req_body_t
  * */
 typedef enum sl_wfx_securelink_mac_key_dest_e {
   SECURE_LINK_MAC_KEY_DEST_OTP                   = 0x78,   ///<Key will be stored in OTP
@@ -566,27 +563,27 @@ typedef enum sl_wfx_securelink_mac_key_dest_e {
  * - to permanently burn the *SecureLink MAC key* in OTP memory. In that case, the OTP *SecureLink mode* will
  * switch to *Trusted Enforced* mode
  */
-typedef struct __attribute__((__packed__)) sl_wfx_set_securemink_mac_key_req_body_s {
+typedef struct __attribute__((__packed__)) sl_wfx_set_sl_mac_key_req_body_s {
   uint8_t  otp_or_ram;                                     ///<Key destination - OTP or RAM (see enum sl_wfx_securelink_mac_key_dest_t)
   uint8_t  key_value[SL_WFX_KEY_VALUE_SIZE];               ///<Secure Link MAC Key value
-} sl_wfx_set_securelink_mac_key_req_body_t;
+} sl_wfx_set_sl_mac_key_req_body_t;
 
-typedef struct __attribute__((__packed__)) sl_wfx_set_securelink_mac_key_req_s {
+typedef struct __attribute__((__packed__)) sl_wfx_set_sl_mac_key_req_s {
   sl_wfx_header_t header;
-  sl_wfx_set_securelink_mac_key_req_body_t body;
-} sl_wfx_set_securelink_mac_key_req_t;
+  sl_wfx_set_sl_mac_key_req_body_t body;
+} sl_wfx_set_sl_mac_key_req_t;
 
 /**
  * @brief Confirmation for the Secure Link MAC key setting
  * */
-typedef struct __attribute__((__packed__)) sl_wfx_set_securelink_mac_key_cnf_body_s {
+typedef struct __attribute__((__packed__)) sl_wfx_set_sl_mac_key_cnf_body_s {
   uint32_t status;                                         ///<Key upload status (see enum sl_wfx_status_t)
-} sl_wfx_set_securelink_mac_key_cnf_body_t;
+} sl_wfx_set_sl_mac_key_cnf_body_t;
 
-typedef struct __attribute__((__packed__)) sl_wfx_set_securelink_mac_key_cnf_s {
+typedef struct __attribute__((__packed__)) sl_wfx_set_sl_mac_key_cnf_s {
   sl_wfx_header_t header;
-  sl_wfx_set_securelink_mac_key_cnf_body_t body;
-} sl_wfx_set_securelink_mac_key_cnf_t;
+  sl_wfx_set_sl_mac_key_cnf_body_t body;
+} sl_wfx_set_sl_mac_key_cnf_t;
 
 #define SL_WFX_HOST_PUB_KEY_SIZE                 32
 #define SL_WFX_HOST_PUB_KEY_MAC_SIZE             64
@@ -682,9 +679,6 @@ typedef struct __attribute__((__packed__)) sl_wfx_securelink_configure_req_s {
 
 /**
  * @brief Confirmation of Secure Link Layer configuration sl_wfx_securelink_configure_req_body_t
- *
- * The following situation will lead to a SL_WFX_STATUS_FAILURE return value:
- * - Bitmap is set to 1 for SL_WFX_SEND_FRAME_REQ_ID (since encryption is not supported for TX frames)
  * */
 typedef struct __attribute__((__packed__)) sl_wfx_securelink_configure_cnf_body_s {
   uint32_t status;                                         ///<Request status (see enum wsm_status)
@@ -715,7 +709,7 @@ typedef struct __attribute__((__packed__)) sl_wfx_securelink_configure_cnf_s {
  * - Firmware revision number is higher or equal to the OTP number -> the firmware is allowed
  *   to proceed
  * - Firmware revision number is lower than the OTP value -> the firmware is not allowed to proceed.
- *   An *Error indication* will be returned to the driver indicating the cause of the error (SL_WFX_ERROR_FIRMWARE_ROLLBACK).
+ *   An *Error indication* will be returned to the driver indicating the cause of the error (WSM_SL_WFX_ERROR_FIRMWARE_ROLLBACK).
  *
  * @note The firmware *rollback revision number* is different that the *firmware version*.
  * The former is incremented only when some important fixes (i.e., Security patches) are provided
@@ -874,8 +868,8 @@ typedef struct __attribute__((__packed__)) sl_wfx_pta_settings_req_body_s {
 } sl_wfx_pta_settings_req_body_t;
 
 typedef struct __attribute__((__packed__)) sl_wfx_pta_settings_req_s {
-  sl_wfx_header_t header;
-  sl_wfx_pta_settings_req_body_t body;
+    sl_wfx_header_t header;
+    sl_wfx_pta_settings_req_body_t body;
 } sl_wfx_pta_settings_req_t;
 
 /**
@@ -894,9 +888,9 @@ typedef struct __attribute__((__packed__)) sl_wfx_pta_settings_cnf_s {
  * @brief Priority levels used by PTA for concurrent (Coex and WLAN) request arbitration.
  */
 typedef enum sl_wfx_pta_priority_e {
-  SL_WFX_PTA_PRIORITY_COEX_MAXIMIZED             = 0x00000562,  ///< Maximizes priority to COEX
+  SL_WFX_PTA_PRIORITY_COEX_MAXIMIZED             = 0x00000562,  ///< Maximizes priority to COEX, WLAN connection is not ensured
   SL_WFX_PTA_PRIORITY_COEX_HIGH                  = 0x00000462,  ///< High priority to COEX, targets low-latency to COEX
-  SL_WFX_PTA_PRIORITY_BALANCED                   = 0x00001461,  ///< Balanced PTA arbitration
+  SL_WFX_PTA_PRIORITY_BALANCED                   = 0x00001461,  ///< Balanced PTA arbitration, WLAN acknowledge receptions are protected
   SL_WFX_PTA_PRIORITY_WLAN_HIGH                  = 0x00001851,  ///< High priority to WLAN, protects WLAN transmissions
   SL_WFX_PTA_PRIORITY_WLAN_MAXIMIZED             = 0x00001A51   ///< Maximizes priority to WLAN
 } sl_wfx_pta_priority_t;
@@ -982,40 +976,6 @@ typedef struct __attribute__((__packed__)) sl_wfx_pta_state_cnf_s {
  * @}
  */
 /* end of PTA section */
-
-/**
- * @brief CCA Mode definition
- * */
-typedef enum sl_wfx_cc_thr_mode_e {
-  SL_WFX_CCA_THR_MODE_RELATIVE = 0x0,                      ///< Use CCA defer threshold relative to channel noise
-  SL_WFX_CCA_THR_MODE_ABSOLUTE = 0x1                       ///< Use absolute CCA defer threshold
-} sl_wfx_cc_thr_mode_t;
-
-/**
- * @brief Request sent by host to set the Clear Channel Assessment configuration
- * Set the CCA mode and the defer threshold
- */
-typedef struct __attribute__((__packed__)) sl_wfx_set_cca_config_req_body_s {
-  uint8_t  cca_thr_mode;                                   ///< CCA threshold mode. See enum ::sl_wfx_cc_thr_mode_t.
-  uint8_t  reserved[3];                                    ///< reserved for future use, set to 0
-} sl_wfx_set_cca_config_req_body_t;
-
-typedef struct __attribute__((__packed__)) sl_wfx_set_cca_config_req_s {
-  sl_wfx_header_t header;
-  sl_wfx_set_cca_config_req_body_t body;
-} sl_wfx_set_cca_config_req_t;
-
-/**
- * @brief Confirmation sent by Wlan firmware after a ::SL_WFX_SET_CCA_CONFIG_REQ_ID request.
- */
-typedef struct __attribute__((__packed__)) sl_wfx_set_cca_config_cnf_body_s {
-  uint32_t status;                                         ///< Confirmation status, see enum ::sl_wfx_status_t
-} sl_wfx_set_cca_config_cnf_body_t;
-
-typedef struct __attribute__((__packed__)) sl_wfx_set_cca_config_s {
-  sl_wfx_header_t header;
-  sl_wfx_set_cca_config_cnf_body_t body;
-} sl_wfx_set_cca_config_t;
 
 /**
  * @}
