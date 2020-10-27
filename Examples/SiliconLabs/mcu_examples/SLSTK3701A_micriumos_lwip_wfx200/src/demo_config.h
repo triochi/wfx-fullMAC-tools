@@ -111,8 +111,8 @@ void lwip_disable_dhcp_client(void);
 #define LWIP_IPERF_SERVER ///< If defined, iperf server is enabled
 #define LWIP_HTTP_SERVER  ///< If defined, http server is enabled
 
-#define WLAN_SSID_DEFAULT       "AP_name"                         ///< wifi ssid for client mode
-#define WLAN_PASSKEY_DEFAULT    "passkey"                         ///< wifi password for client mode
+#define WLAN_SSID_DEFAULT       "topcho"                         ///< wifi ssid for client mode
+#define WLAN_PASSKEY_DEFAULT    "bistrinchanin2"                         ///< wifi password for client mode
 #define WLAN_SECURITY_DEFAULT   WFM_SECURITY_MODE_WPA2_PSK        ///< wifi security mode for client mode: WFM_SECURITY_MODE_OPEN/WFM_SECURITY_MODE_WEP/WFM_SECURITY_MODE_WPA2_WPA1_PSK
 #define SOFTAP_SSID_DEFAULT     "silabs_softap"                   ///< wifi ssid for soft ap mode
 #define SOFTAP_PASSKEY_DEFAULT  "changeme"                        ///< wifi password for soft ap mode

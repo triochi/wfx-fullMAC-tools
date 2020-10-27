@@ -108,6 +108,11 @@ void wifi_cli_cfg_dialog(void)
   RTOS_ERR err;
   CPU_INT08U ctr;
   int c;
+  sl_wfx_send_join_command((uint8_t*) WLAN_SSID_DEFAULT, strlen(WLAN_SSID_DEFAULT), NULL, 0,
+       WLAN_SECURITY_DEFAULT, 1, 0, (uint8_t*) WLAN_PASSKEY_DEFAULT, strlen(WLAN_PASSKEY_DEFAULT),
+       NULL, 0);
+  return;
+
   printf("\nPress <Enter> within 5 seconds to configure the demo...\n");
   OSTimeDly(100,             //   100 OS Ticks
             OS_OPT_TIME_DLY,
