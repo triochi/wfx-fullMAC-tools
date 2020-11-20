@@ -54,6 +54,7 @@
 #include "wfx_task.h"
 #include "dhcp_server.h"
 #include "wfx_host.h"
+#include "lwip/netif.h"
 
 extern scan_result_list_t scan_list[];
 extern uint8_t scan_count_web;
@@ -637,6 +638,33 @@ static void lwip_iperf_results(void *arg, enum lwiperf_report_type report_type,
 
 #endif
 
+
+
+static netif_ext_callback_t callback;
+
+void ext_callback (struct netif *netif, netif_nsc_reason_t reason, const netif_ext_callback_args_t *args){
+  if (reason & (LWIP_NSC_IPV4_ADDRESS_CHANGED | LWIP_NSC_IPV4_SETTINGS_CHANGED | LWIP_NSC_STATUS_CHANGED))
+  {
+    uint32_t arp_ip_addr;
+    arp_ip_addr = ((netif->ip_addr.addr & 0xff) << 24) +
+            (((netif->ip_addr.addr >> 8) & 0xff) << 16) +
+            (((netif->ip_addr.addr >> 16) & 0xff) << 8) +
+            ((netif->ip_addr.addr >> 24) & 0xff);
+    sl_wfx_set_arp_ip_address(&arp_ip_addr, 1);
+    printf("ARP Offloading engaged. IP address : %d.%d.%d.%d\n\r",
+         (int)(netif->ip_addr.addr & 0xff),
+         (int)((netif->ip_addr.addr >> 8) & 0xff),
+         (int)((netif->ip_addr.addr >> 16) & 0xff),
+         (int)((netif->ip_addr.addr >> 24) & 0xff));
+    // printf("ARP Offloading engaged.\n\r");
+  }
+  else
+  {
+    // printf("Ext callback reason: 0x%04x\r\n", reason);
+  }
+}
+
+
 /***************************************************************************//**
  * Start LwIP task(s).
  *
@@ -650,6 +678,7 @@ static void lwip_task(void *p_arg)
 
   // Initialize the LwIP stack
   netif_config();
+  netif_add_ext_callback(&callback, ext_callback);
 
 #ifdef LWIP_HTTP_SERVER
   // Initialize web server demo
@@ -668,7 +697,15 @@ static void lwip_task(void *p_arg)
 
   for (;; ) {
     // Delete the Init Thread
-    OSTaskDel(NULL, &err);
+//    OSTaskDel(NULL, &err);
+    OSTimeDly(1000, OS_OPT_TIME_DLY, &err);
+    if(!(sl_wfx_context->state & SL_WFX_STA_INTERFACE_CONNECTED))
+    {
+        sl_wfx_send_join_command((uint8_t*) WLAN_SSID_DEFAULT, strlen(WLAN_SSID_DEFAULT), NULL, 0,
+              WLAN_SECURITY_DEFAULT, 1, 0, (uint8_t*) WLAN_PASSKEY_DEFAULT, strlen(WLAN_PASSKEY_DEFAULT),
+              NULL, 0);
+        OSTimeDly(5000, OS_OPT_TIME_DLY, &err);
+    }
   }
 }
 /**************************************************************************//**

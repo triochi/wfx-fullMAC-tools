@@ -31,8 +31,8 @@
 /************************** Station Static Default ****************************/
 #define STA_IP_ADDR0_DEFAULT   (uint8_t) 192 ///< Static IP: IP address value 0
 #define STA_IP_ADDR1_DEFAULT   (uint8_t) 168 ///< Static IP: IP address value 1
-#define STA_IP_ADDR2_DEFAULT   (uint8_t) 0   ///< Static IP: IP address value 2
-#define STA_IP_ADDR3_DEFAULT   (uint8_t) 1   ///< Static IP: IP address value 3
+#define STA_IP_ADDR2_DEFAULT   (uint8_t) 1   ///< Static IP: IP address value 2
+#define STA_IP_ADDR3_DEFAULT   (uint8_t) 200   ///< Static IP: IP address value 3
 
 /*NETMASK*/
 #define STA_NETMASK_ADDR0_DEFAULT   (uint8_t) 255 ///< Static IP: Netmask value 0
