@@ -641,16 +641,17 @@ static void lwip_iperf_results(void *arg, enum lwiperf_report_type report_type,
 
 
 static netif_ext_callback_t callback;
+uint32_t arp_ip_addr;
 
 void ext_callback (struct netif *netif, netif_nsc_reason_t reason, const netif_ext_callback_args_t *args){
   if (reason & (LWIP_NSC_IPV4_ADDRESS_CHANGED | LWIP_NSC_IPV4_SETTINGS_CHANGED | LWIP_NSC_STATUS_CHANGED))
   {
-    uint32_t arp_ip_addr;
+
     arp_ip_addr = ((netif->ip_addr.addr & 0xff) << 24) +
             (((netif->ip_addr.addr >> 8) & 0xff) << 16) +
             (((netif->ip_addr.addr >> 16) & 0xff) << 8) +
             ((netif->ip_addr.addr >> 24) & 0xff);
-    sl_wfx_set_arp_ip_address(&arp_ip_addr, 1);
+
     printf("ARP Offloading engaged. IP address : %d.%d.%d.%d\n\r",
          (int)(netif->ip_addr.addr & 0xff),
          (int)((netif->ip_addr.addr >> 8) & 0xff),
@@ -701,11 +702,19 @@ static void lwip_task(void *p_arg)
     OSTimeDly(1000, OS_OPT_TIME_DLY, &err);
     if(!(sl_wfx_context->state & SL_WFX_STA_INTERFACE_CONNECTED))
     {
+        arp_ip_addr = 0;
+        sl_wfx_set_arp_ip_address(&arp_ip_addr, 1);
         sl_wfx_send_join_command((uint8_t*) WLAN_SSID_DEFAULT, strlen(WLAN_SSID_DEFAULT), NULL, 0,
               WLAN_SECURITY_DEFAULT, 1, 0, (uint8_t*) WLAN_PASSKEY_DEFAULT, strlen(WLAN_PASSKEY_DEFAULT),
               NULL, 0);
         OSTimeDly(5000, OS_OPT_TIME_DLY, &err);
     }
+    else if (arp_ip_addr)
+    {
+      sl_wfx_set_arp_ip_address(&arp_ip_addr, 1);
+      arp_ip_addr = 0;
+    }
+
   }
 }
 /**************************************************************************//**

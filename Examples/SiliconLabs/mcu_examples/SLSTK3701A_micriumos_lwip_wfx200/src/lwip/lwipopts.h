@@ -21,9 +21,9 @@
 #ifndef __LWIPOPTS_H__
 #define __LWIPOPTS_H__
 
-#define LWIP_DEBUG LWIP_DBG_OFF
-#define TCP_DEBUG LWIP_DBG_OFF
-#define DHCP_DEBUG LWIP_DBG_OFF
+#define LWIP_DEBUG LWIP_DBG_ON
+#define TCP_DEBUG LWIP_DBG_ON
+#define DHCP_DEBUG LWIP_DBG_ON
 
 #define NO_SYS                  0
 
