@@ -51,6 +51,7 @@ extern void wfx_securelink_task_start(void);
 
 
 extern char btn_pressed;
+extern sl_wfx_context_t *sl_wfx_context;
 
 /// Start task stack.
 static  CPU_STK  main_start_task_stk[EX_MAIN_START_TASK_STK_SIZE];
@@ -70,6 +71,10 @@ static bool sleepCallback(SLEEP_EnergyMode_t emode)
 #else
   if (GPIO_PinInGet(WFX_HOST_CFG_WIRQPORT,  WFX_HOST_CFG_WIRQPIN)) //wf200 messages pending
 #endif
+  {
+    return false;
+  }
+  if(! (sl_wfx_context->state & SL_WFX_STA_INTERFACE_CONNECTED))
   {
     return false;
   }
@@ -304,6 +309,11 @@ static  void  main_start_task(void  *p_arg)
 
   wfx_events_task_start();
   lwip_start();
+  while(1)
+  {
+
+    OSTimeDly(1000, OS_OPT_TIME_DLY, &err);
+  }
 
   // Delete the init thread.
   OSTaskDel(0, &err);
