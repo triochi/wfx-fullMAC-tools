@@ -49,6 +49,9 @@
 extern void wfx_securelink_task_start(void);
 #endif
 
+
+extern char btn_pressed;
+
 /// Start task stack.
 static  CPU_STK  main_start_task_stk[EX_MAIN_START_TASK_STK_SIZE];
 /// Start task TCB.
@@ -170,10 +173,12 @@ static void GPIO_Unified_IRQ(void)
   }
   if (interrupt_mask & (1 << BSP_GPIO_PB0_PIN)) {
     BSP_LedToggle(0);
+    btn_pressed = 1;
   }
 
   if (interrupt_mask & (1 << BSP_GPIO_PB1_PIN)) {
     BSP_LedToggle(1);
+    btn_pressed = 1;
   }
 }
 

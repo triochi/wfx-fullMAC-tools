@@ -135,6 +135,7 @@ static OS_TCB lwip_task_tcb;
 static char string_list[4096];
 /// Memory to store an event to display in the web page
 char event_log[50];
+char btn_pressed;
 /// AP channel
 static uint8_t ap_channel;
 /// AP mac address.
@@ -713,6 +714,21 @@ static void lwip_task(void *p_arg)
     {
       sl_wfx_set_arp_ip_address(&arp_ip_addr, 1);
       arp_ip_addr = 0;
+    }
+    if(btn_pressed)
+    {
+
+      sl_wfx_disable_device_power_save();
+      while(SL_STATUS_OK != sl_wfx_set_power_mode(WFM_PM_MODE_PS, 0))
+      {
+        OSTimeDly(10, OS_OPT_TIME_DLY, &err);
+      }
+      sl_wfx_enable_device_power_save();
+//      OSTimeDly(8000, OS_OPT_TIME_DLY, &err);
+//      sl_wfx_disable_device_power_save();
+//      sl_wfx_set_power_mode(WFM_PM_MODE_PS, WFM_PM_SKIP_CNT);
+//      sl_wfx_enable_device_power_save();
+      btn_pressed = 0;
     }
 
   }
