@@ -20,13 +20,15 @@
 #include "sl_wfx_cmd_api.h"
 #include "sl_status.h"
 
-#define USE_DHCP_CLIENT_DEFAULT    1   ///< If defined, DHCP is enabled, otherwise static address below is used
+#define USE_DHCP_CLIENT_DEFAULT    0   ///< If defined, DHCP is enabled, otherwise static address below is used
+#define SLEEP_ENABLED			   1
+#define WFM_PM_SKIP_CNT			   20
 
 /************************** Station Static Default ****************************/
 #define STA_IP_ADDR0_DEFAULT   (uint8_t) 192 ///< Static IP: IP address value 0
 #define STA_IP_ADDR1_DEFAULT   (uint8_t) 168 ///< Static IP: IP address value 1
-#define STA_IP_ADDR2_DEFAULT   (uint8_t) 0   ///< Static IP: IP address value 2
-#define STA_IP_ADDR3_DEFAULT   (uint8_t) 1   ///< Static IP: IP address value 3
+#define STA_IP_ADDR2_DEFAULT   (uint8_t) 1   ///< Static IP: IP address value 2
+#define STA_IP_ADDR3_DEFAULT   (uint8_t) 200 ///< Static IP: IP address value 3
 
 /*NETMASK*/
 #define STA_NETMASK_ADDR0_DEFAULT   (uint8_t) 255 ///< Static IP: Netmask value 0
@@ -112,9 +114,9 @@ void wfx_init( void *arg );
 #define LWIP_IPERF_SERVER ///< If defined, iperf server is enabled
 #define LWIP_HTTP_SERVER  ///< If defined, http server is enabled
 
-#define WLAN_SSID_DEFAULT       "AP_name"                         ///< wifi ssid for client mode
-#define WLAN_PASSKEY_DEFAULT    "passkey"                         ///< wifi password for client mode
-#define WLAN_SECURITY_DEFAULT   WFM_SECURITY_MODE_WPA2_PSK        ///< wifi security mode for client mode: WFM_SECURITY_MODE_OPEN/WFM_SECURITY_MODE_WEP/WFM_SECURITY_MODE_WPA2_WPA1_PSK
+#define WLAN_SSID_DEFAULT       "topcho"                          ///< wifi ssid for client mode
+#define WLAN_PASSKEY_DEFAULT    "bistrinchanin2"                  ///< wifi password for client mode
+#define WLAN_SECURITY_DEFAULT    WFM_SECURITY_MODE_WPA2_WPA1_PSK  ///< wifi security mode for client mode: WFM_SECURITY_MODE_OPEN/WFM_SECURITY_MODE_WEP/WFM_SECURITY_MODE_WPA2_WPA1_PSK
 #define SOFTAP_SSID_DEFAULT     "silabs_softap"                   ///< wifi ssid for soft ap mode
 #define SOFTAP_PASSKEY_DEFAULT  "changeme"                        ///< wifi password for soft ap mode
 #define SOFTAP_SECURITY_DEFAULT WFM_SECURITY_MODE_WPA2_PSK        ///< wifi security for soft ap mode: WFM_SECURITY_MODE_OPEN/WFM_SECURITY_MODE_WEP/WFM_SECURITY_MODE_WPA2_WPA1_PSK

@@ -955,7 +955,15 @@ static void lwip_task(void *p_arg)
 
   for (;; ) {
     // Delete the Init Thread
-    OSTaskDel(NULL, &err);
+    // OSTaskDel(NULL, &err);
+    OSTimeDly(1000, OS_OPT_TIME_DLY, &err);
+    if(!(sl_wfx_context->state & SL_WFX_STA_INTERFACE_CONNECTED))
+    {
+        sl_wfx_send_join_command((uint8_t*) WLAN_SSID_DEFAULT, strlen(WLAN_SSID_DEFAULT), NULL, 0,
+              WLAN_SECURITY_DEFAULT, 1, 0, (uint8_t*) WLAN_PASSKEY_DEFAULT, strlen(WLAN_PASSKEY_DEFAULT),
+              NULL, 0);
+        OSTimeDly(5000, OS_OPT_TIME_DLY, &err);
+    }
   }
 }
 /**************************************************************************//**
