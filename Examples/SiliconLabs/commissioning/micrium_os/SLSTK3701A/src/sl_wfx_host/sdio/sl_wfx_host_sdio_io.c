@@ -27,7 +27,7 @@
 #include "sl_wfx_host.h"
 #include "sl_wfx_task.h"
 #include "sleep.h"
-#include "demo_config.h"
+#include "lwip_micriumos.h"
 
 #ifndef SL_WIFI_CFG_SD_CONTROLLER_NAME
 #define SL_WIFI_CFG_SD_CONTROLLER_NAME             "sd0"
