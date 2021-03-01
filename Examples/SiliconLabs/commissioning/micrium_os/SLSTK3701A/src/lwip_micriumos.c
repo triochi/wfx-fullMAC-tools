@@ -900,20 +900,23 @@ static void lwip_app_wifi_config_prompt (void)
 
     printf("\n");
   } else {
+	sl_wfx_send_join_command((uint8_t*) WLAN_SSID_DEFAULT, strlen(WLAN_SSID_DEFAULT), NULL, 0,
+	            WLAN_SECURITY_DEFAULT, 1, 0, (uint8_t*) WLAN_PASSKEY_DEFAULT, strlen(WLAN_PASSKEY_DEFAULT),
+	            NULL, 0);
     // Start the SoftAP with the default configuration
-    sl_wfx_start_ap_command(softap_channel,
-                            (uint8_t*) softap_ssid,
-                            strlen(softap_ssid),
-                            0,
-                            0,
-                            softap_security,
-                            0,
-                            (uint8_t*) softap_passkey,
-                            strlen(softap_passkey),
-                            NULL,
-                            0,
-                            NULL,
-                            0);
+//    sl_wfx_start_ap_command(softap_channel,
+//                            (uint8_t*) softap_ssid,
+//                            strlen(softap_ssid),
+//                            0,
+//                            0,
+//                            softap_security,
+//                            0,
+//                            (uint8_t*) softap_passkey,
+//                            strlen(softap_passkey),
+//                            NULL,
+//                            0,
+//                            NULL,
+//                            0);
   }
 
 #ifdef SLEEP_ENABLED

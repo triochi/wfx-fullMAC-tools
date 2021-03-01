@@ -40,6 +40,23 @@
 #include <mbedtls/threading.h>
 #include "sleep.h"
 
+#include "lwip/timeouts.h"
+#include "netif/etharp.h"
+#include "ethernetif.h"
+#include <string.h>
+#include "sl_wfx_constants.h"
+#include "sl_wfx_host_api.h"
+#include "sl_wfx.h"
+#include "lwip_micriumos.h"
+
+#include <kernel/include/os.h>
+#include <common/include/rtos_utils.h>
+#include <common/include/rtos_err.h>
+#include <common/source/kal/kal_priv.h>
+#include <common/include/rtos_err.h>
+#include "sl_wfx_task.h"
+#include "lwip/tcpbase.h"
+
 #define  EX_MAIN_START_TASK_PRIO              30u
 #define  EX_MAIN_START_TASK_STK_SIZE         512u
 
@@ -52,6 +69,19 @@ static  CPU_STK  main_start_task_stk[EX_MAIN_START_TASK_STK_SIZE];
 /// Start task TCB.
 static  OS_TCB   main_start_task_tcb;
 static  void     main_start_task (void  *p_arg);
+
+uint8_t send_message;
+uint8_t send_in_progress;
+uint8_t send_complete;
+int counter = 0;
+struct tcp_pcb *testpcb;
+ip_addr_t ip = {.addr = 0x01002a0a};
+
+void tcp_setup(void);
+err_t tcpRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err);
+uint32_t tcp_send_packet(void);
+err_t connectCallback(void *arg, struct tcp_pcb *tpcb, err_t err);
+
 
 #ifdef SLEEP_ENABLED
 
@@ -306,9 +336,141 @@ static  void  main_start_task(void  *p_arg)
 #endif //SL_WFX_USE_SECURE_LINK
 
   lwip_start();
-
+  while (1)
+  {
+    if(send_message || (counter%3000) == 0)
+    {
+     		 err_t err = 0;
+    		 send_message = 0;
+    		 send_in_progress = 1;
+    		 tcp_setup();
+    	 	 printf("Hello! %d err = %d\n\n", counter++, err);
+    }
+    if (send_complete)
+    {
+      send_complete = 0;
+      sl_wfx_set_power_mode(WFM_PM_MODE_PS, WFM_PM_POLL_FAST_PS, WFM_PM_SKIP_CNT);
+      sl_wfx_enable_device_power_save();
+    }
+  }
   // Delete the init thread.
   OSTaskDel(0, &err);
 
 }
 
+err_t tcpSendCallback(void *arg, struct tcp_pcb *tpcb, u16_t len)
+{
+  printf("Packet sent");
+  //    sl_wfx_set_power_mode(WFX_POWER_MODE, 30);
+  //    sl_wfx_enable_device_power_save();
+  return 0;
+}
+
+void tcpErrorHandler(void *arg, err_t err)
+{
+  if (err == ERR_OK)
+  {
+    printf("Err OK");
+  }
+  else
+  {
+    printf("Err %d", err);
+  }
+  return;
+}
+
+void tcp_setup(void)
+{
+  uint32_t data = 0xdeadbeef;
+  sl_wfx_set_power_mode(WFM_PM_MODE_ACTIVE, WFM_PM_POLL_FAST_PS, 0);
+  sl_wfx_disable_device_power_save();
+  /* create an ip */
+  //    struct ip_addr ip;
+  IP4_ADDR(&ip, 192, 168, 1, 100);
+  //    IP4_ADDR(&ip, 10,42,0,224);    //IP of server
+
+  /* create the control block */
+  testpcb = tcp_new(); //testpcb is a global struct tcp_pcb
+                       // as defined by lwIP
+
+  /* dummy data to pass to callbacks*/
+
+  tcp_arg(testpcb, &data);
+
+  /* register callbacks with the pcb */
+
+  tcp_err(testpcb, tcpErrorHandler);
+  tcp_recv(testpcb, tcpRecvCallback);
+  tcp_sent(testpcb, tcpSendCallback);
+
+  /* now connect */
+  tcp_connect(testpcb, &ip, 80, connectCallback);
+  printf("connecting to destination\n");
+}
+
+/* connection established callback, err is unused and only return 0 */
+err_t connectCallback(void *arg, struct tcp_pcb *tpcb, err_t err)
+{
+  printf("Connection Established.\n");
+  printf("Now sending a packet\n");
+  tcp_send_packet();
+  return 0;
+}
+
+uint32_t tcp_send_packet(void)
+{
+  err_t error;
+  static int counter3;
+  char *string;
+  //    if( GPIO_PinInGet(BSP_GPIO_LED0_PORT, BSP_GPIO_LED0_PIN))
+  if (counter3++ & 1)
+  {
+    string = "GET /relay/0?turn=on HTTP/1.0\r\nHost: 10.42.0.224\r\nConnection: close\r\n\r\n ";
+  }
+  else
+  {
+    string = "GET /relay/0?turn=off HTTP/1.0\r\nHost: 10.42.0.224\r\nConnection: close\r\n\r\n ";
+  }
+
+  /* push to buffer */
+  error = tcp_write(testpcb, string, strlen(string), TCP_WRITE_FLAG_COPY);
+
+  if (error)
+  {
+    printf("ERROR: Code: %d (tcp_send_packet :: tcp_write)\n", error);
+    return 1;
+  }
+
+  /* now send */
+  error = tcp_output(testpcb);
+  if (error)
+  {
+    printf("ERROR: Code: %d (tcp_send_packet :: tcp_output)\n", error);
+    return 1;
+  }
+  return 0;
+}
+
+err_t tcpRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
+{
+  printf("Data recieved.\n");
+  if (p == NULL)
+  {
+    printf("The remote host closed the connection.\n");
+    printf("Now I'm closing the connection.\n");
+    tcp_shutdown(testpcb, 1, 1);
+    //        tcp_close_con();
+    //        tcp_free(testpcb);
+    return ERR_ABRT;
+  }
+  else
+  {
+    printf("Number of pbufs %d\n", pbuf_clen(p));
+    printf("Contents of pbuf %s\n", (char *)p->payload);
+  }
+  tcp_shutdown(testpcb, 1, 1);
+  send_in_progress = 0;
+  //    sl_wfx_enable_device_power_save();
+  send_complete = 1;
+  return 0;
+}
