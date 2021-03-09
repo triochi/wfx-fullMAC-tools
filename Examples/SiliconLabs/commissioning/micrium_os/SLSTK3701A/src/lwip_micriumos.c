@@ -61,8 +61,10 @@ extern OS_SEM scan_sem;
 extern scan_result_list_t scan_list[];
 extern uint8_t scan_count_web;
 extern bool scan_verbose;
+extern bool connect;
 
-static void netif_config(void);
+//static
+void netif_config(void);
 
 #define LWIP_TASK_PRIO              22u
 #define LWIP_TASK_STK_SIZE         800u
@@ -960,11 +962,13 @@ static void lwip_task(void *p_arg)
     // Delete the Init Thread
     // OSTaskDel(NULL, &err);
     OSTimeDly(1000, OS_OPT_TIME_DLY, &err);
-    if(!(sl_wfx_context->state & SL_WFX_STA_INTERFACE_CONNECTED))
+    if(!(sl_wfx_context->state & SL_WFX_STA_INTERFACE_CONNECTED) && connect)
     {
+    	printf("Join command\n\n");
         sl_wfx_send_join_command((uint8_t*) WLAN_SSID_DEFAULT, strlen(WLAN_SSID_DEFAULT), NULL, 0,
               WLAN_SECURITY_DEFAULT, 1, 0, (uint8_t*) WLAN_PASSKEY_DEFAULT, strlen(WLAN_PASSKEY_DEFAULT),
               NULL, 0);
+        connect = false;
         OSTimeDly(5000, OS_OPT_TIME_DLY, &err);
     }
   }
@@ -1033,7 +1037,8 @@ sl_status_t lwip_set_ap_link_down(void)
 /***************************************************************************//**
  * Initializes LwIP network interface.
  ******************************************************************************/
-static void netif_config(void)
+//static
+void netif_config(void)
 {
   sl_status_t status;
   ip_addr_t sta_ipaddr, ap_ipaddr;

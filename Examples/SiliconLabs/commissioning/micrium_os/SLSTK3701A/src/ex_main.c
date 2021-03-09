@@ -69,6 +69,7 @@ static  CPU_STK  main_start_task_stk[EX_MAIN_START_TASK_STK_SIZE];
 /// Start task TCB.
 static  OS_TCB   main_start_task_tcb;
 static  void     main_start_task (void  *p_arg);
+void netif_config(void);
 
 uint8_t send_message;
 uint8_t send_in_progress;
@@ -76,6 +77,8 @@ uint8_t send_complete;
 int counter = 0;
 struct tcp_pcb *testpcb;
 ip_addr_t ip = {.addr = 0x01002a0a};
+extern uint8_t sleepBlockCnt[];
+bool connect;
 
 void tcp_setup(void);
 err_t tcpRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err);
@@ -326,6 +329,7 @@ static  void  main_start_task(void  *p_arg)
   // Initialize the BSP.
   BSP_OS_Init();
   BSP_LedsInit();
+//  connect = true;
 
   printf("WF200 Micrium OS LwIP Example\n");
 
@@ -338,19 +342,66 @@ static  void  main_start_task(void  *p_arg)
   lwip_start();
   while (1)
   {
-    if(send_message || (counter%3000) == 0)
-    {
-     		 err_t err = 0;
-    		 send_message = 0;
-    		 send_in_progress = 1;
-    		 tcp_setup();
-    	 	 printf("Hello! %d err = %d\n\n", counter++, err);
-    }
     if (send_complete)
     {
       send_complete = 0;
-      sl_wfx_set_power_mode(WFM_PM_MODE_PS, WFM_PM_POLL_FAST_PS, WFM_PM_SKIP_CNT);
-      sl_wfx_enable_device_power_save();
+//      sl_wfx_set_power_mode(WFM_PM_MODE_PS, WFM_PM_POLL_FAST_PS, WFM_PM_SKIP_CNT);
+      connect = false;
+      sl_wfx_send_disconnect_command();
+      OSTimeDly(50, OS_OPT_TIME_DLY, &err);
+      sl_wfx_deinit();
+      sl_wfx_context->state |= SL_WFX_SLEEPING;
+      printf("--> Sleeping\r\n");
+//      SLEEP_Sleep();
+//      sleepBlockCnt[0] = 0; // Force enable sleep modes EM2 and EM3
+//      sleepBlockCnt[1] = 0;
+    }
+    if(send_in_progress)
+    {
+    	OSTimeDly(50, OS_OPT_TIME_DLY, &err);
+    }
+    else
+    {
+    	sl_status_t status;
+    	OSTimeDly(20000, OS_OPT_TIME_DLY, &err);
+    	if((wifi.state & SL_WFX_STA_INTERFACE_CONNECTED) && !send_in_progress)
+		{
+			 err_t err = 0;
+			 send_in_progress = 1;
+			 tcp_setup();
+			 printf("Hello! %d err = %d\n\n", counter++, err);
+		}
+    	else
+    	{
+    		printf("Will connect\n\n");
+    		status = sl_wfx_init(&wifi);
+    		printf("FMAC Driver version    %s\r\n", FMAC_DRIVER_VERSION_STRING);
+    		switch (status) {
+			case SL_STATUS_OK:
+			  wifi.state = SL_WFX_STARTED;
+			  printf("WF200 Firmware version %d.%d.%d\r\n",
+					 wifi.firmware_major,
+					 wifi.firmware_minor,
+					 wifi.firmware_build);
+			  printf("WF200 initialization successful\r\n");
+			  break;
+			case SL_STATUS_WIFI_INVALID_KEY:
+			  printf("Failed to init WF200: Firmware keyset invalid\r\n");
+			  break;
+			case SL_STATUS_WIFI_FIRMWARE_DOWNLOAD_TIMEOUT:
+			  printf("Failed to init WF200: Firmware download timeout\r\n");
+			  break;
+			case SL_STATUS_TIMEOUT:
+			  printf("Failed to init WF200: Poll for value timeout\r\n");
+			  break;
+			case SL_STATUS_FAIL:
+			  printf("Failed to init WF200: Error\r\n");
+			  break;
+			default:
+			  printf("Failed to init WF200: Unknown error\r\n");
+    		}
+    		connect = (status == SL_STATUS_OK);
+    	}
     }
   }
   // Delete the init thread.
@@ -425,11 +476,11 @@ uint32_t tcp_send_packet(void)
   //    if( GPIO_PinInGet(BSP_GPIO_LED0_PORT, BSP_GPIO_LED0_PIN))
   if (counter3++ & 1)
   {
-    string = "GET /relay/0?turn=on HTTP/1.0\r\nHost: 10.42.0.224\r\nConnection: close\r\n\r\n ";
+    string = "GET /relay/0?turn=on HTTP/1.0\r\nHost: 192.168.1.100\r\nConnection: close\r\n\r\n ";
   }
   else
   {
-    string = "GET /relay/0?turn=off HTTP/1.0\r\nHost: 10.42.0.224\r\nConnection: close\r\n\r\n ";
+    string = "GET /relay/0?turn=off HTTP/1.0\r\nHost: 192.168.1.100\r\nConnection: close\r\n\r\n ";
   }
 
   /* push to buffer */
